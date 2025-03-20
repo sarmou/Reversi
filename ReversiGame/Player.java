@@ -3,8 +3,8 @@ import java.util.Random;
 
 class Player 
 {
-	private int maxDepth;
-    private int playerLetter;
+	private int maxDepth; //level of difficulty
+    private int playerLetter; //colour of player B(black) or W(white)
     public static final int EMPTY = 0;
 	
 	public Player() {}
@@ -20,6 +20,7 @@ class Player
     //     return null;
     // }
 	
+	//Black player moves with max function
 	Move max(Board board, int depth){
         Random r = new Random();
         /* If MAX is called on a state that is terminal or after a maximum depth is reached,
@@ -35,7 +36,7 @@ class Player
         children = board.getChildren(Board.B);
         
         
-        Move maxMove = new Move(Integer.MIN_VALUE); // put max node initially to smallest value.
+        Move maxMove = new Move(Integer.MIN_VALUE); //starts with the smallest possible score ensuring that any valid move found will be better than the initial value.
         for(Board child: children)
         {
             //And for each child min is called, on a lower depth
@@ -67,7 +68,7 @@ class Player
             //The child-move with the greatest value is selected and returned by max
             if(move.getValue() >= maxMove.getValue())
             {
-                //If the heuristic has the save value then we randomly choose one of the two moves
+                //If the heuristic has the same value then we randomly choose one of the two moves
                 if((move.getValue()) == maxMove.getValue())
                 {
                     if(r.nextInt(2) == 0)
@@ -88,8 +89,10 @@ class Player
         
         return maxMove;
     }
+
 	
-	 Move min(Board board, int depth){
+	//White player moves with min function
+	Move min(Board board, int depth){
         Random r = new Random();
         if(board.isTerminal() || (depth == this.maxDepth))
         {
