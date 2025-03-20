@@ -2,7 +2,8 @@ public class Move
 {
     private int row;
     private int col;
-    private int value; // corresponds to the colour of the player Black(-1) or White(1)
+    private int value; // corresponds to the colour of the player Black(-1) or White(1) and other times it is used to store the value returned from the evaluation function
+    
 
     Move()
     {
