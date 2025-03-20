@@ -13,7 +13,8 @@ class Board
     private Move lastMove;
 	
 	private int dimension = 8;
-	
+
+	//creates the initial game state
 	public Board() {
         this.lastMove = new Move();
         this.lastPlayer = W;
@@ -31,7 +32,7 @@ class Board
         this.gameBoard[4][3]= -1;
     }
 	
-	// copy constructor
+    // copy constructor
     public Board(Board board) {
 
         this.lastMove = board.lastMove;
@@ -53,7 +54,7 @@ class Board
         this.lastMove = new Move(row, col);
         this.lastPlayer = letter;
     }
-	
+	// prints the current state of the game board 
 	public void print() {
         System.out.println("*********");
         for(int row=0; row<8; row++)
@@ -74,24 +75,25 @@ class Board
         System.out.println("*********");
     }
 
-	
+	// returns all possible game/board states 
 	ArrayList<Board> getChildren(int letter) {
-        ArrayList<Board> children = new ArrayList<>();
-        ArrayList<Move> moves= getavailableMoves(letter);
-        for(Move mv:moves){
-            Board child = new Board(this);
-            int row = mv.getRow();
-            int col = mv.getCol(); 
-            child.makeMove(row, col, letter);
-            Move m=new Move(row,col,letter);
-            
-            child.switcher(m); //ta gyrizoume gia na vgainoun swsta
-            children.add(child);
-        }
-        
-        return children;
-    }
+	        ArrayList<Board> children = new ArrayList<>();
+	        ArrayList<Move> moves= getavailableMoves(letter);
+	        for(Move mv:moves){
+	            Board child = new Board(this);
+	            int row = mv.getRow();
+	            int col = mv.getCol(); 
+	            child.makeMove(row, col, letter);
+	            Move m=new Move(row,col,letter);
+	            
+	            child.switcher(m); //after making a move we make sure every disk that had to be switched was switched 
+	            children.add(child);
+	        }
+	        
+	        return children;
+    	}
 
+	// evaluates the state of the board according to game strategies and calculates the gain/loss for every player
 	public int evaluate () {
         int scoreB = 0;
         int scoreW = 0;
@@ -686,7 +688,7 @@ class Board
         balanced.add(scoreb);
         return balanced;
     }
-
+	// checks if the game is finished (no more moves or somebody won)
 	public boolean isTerminal() {
 
 
@@ -719,7 +721,7 @@ class Board
             notsamecolor_Alldiscs = false;            
         }
 
-        // check for empty
+        // check for empty spaces on the board
         boolean filled =true;
         for(int row = 0; row < this.gameBoard.length; row++)
         {
@@ -777,7 +779,7 @@ class Board
         this.lastPlayer = lastPlayer;
     }
 
-
+    //switches the disks already placed on the board after a new move is done 
     int switcher(Move move){
 
         boolean isChecked;
@@ -791,23 +793,23 @@ class Board
         if (row>0){
             i = row-1;
             while (i >= 0 ){
-                if(gameBoard[i][col]==0){//an yparxei endiamesa keno den xreiazetai na gyristei kati
+                if(gameBoard[i][col]==0){//if there is a gap between 2 disks we don't have to switch any disk 
                     break;
                 }
-                if(gameBoard[i][col] == move.getValue()){//elegxoume an yparxei pioni idiou xrwmatos sthn stili 
+                if(gameBoard[i][col] == move.getValue()){ //check if there is a disk of the player that made the move (same colour) on the column   
                     isChecked = true;
                     break;
                 }           
                 i--;
             }
             if (isChecked){
-                for (int k = i+1; k<move.getRow(); k++){
-                    if(gameBoard[k][col] == move.getValue()*(-1)){//elegxoume an yparxei pioni allou xrwmatos anamesa
-                        gameBoard[k][col] = move.getValue();
+                for (int k = i+1; k<row; k++){
+                    if(gameBoard[k][col] == move.getValue()*(-1)){ //check if there is an opponent's disk (different colour) between our disks
+                        gameBoard[k][col] = move.getValue(); //switch the disk to our colour
                     }
                     
                 }
-                setGameBoard(gameBoard);
+                setGameBoard(gameBoard); //update the state of the board to include switches
                            
             }
         }
@@ -1264,6 +1266,7 @@ class Board
         return stableD;
     }
 
+    //returns player's available moves 	
     public ArrayList<Move> getavailableMoves(int playerLetter){
         ArrayList<Move> rc = new ArrayList<Move>();
         ArrayList<Move> frontiersOpponent = getFrontierSquares((-1)*playerLetter);
