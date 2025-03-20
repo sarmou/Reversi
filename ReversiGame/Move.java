@@ -2,7 +2,7 @@ public class Move
 {
     private int row;
     private int col;
-    private int value;
+    private int value; // corresponds to the colour of the player Black(-1) or White(1)
 
     Move()
     {
